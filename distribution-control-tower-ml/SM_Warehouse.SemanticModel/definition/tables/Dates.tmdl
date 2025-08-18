@@ -1,0 +1,175 @@
+table Dates
+	lineageTag: 330c0cba-b952-4e41-aef7-e61d25e9cab3
+	sourceLineageTag: [WHS].[Dates]
+	dataCategory: Time
+
+	measure 'Total Sales MTD' = TOTALMTD([Total Sales], Dates[Date])
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 8db3447c-ac13-421c-9eba-39d9644b7990
+
+		changedProperty = Name
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Total Sales YTD' = TOTALYTD([Total Sales], Dates[Date])
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 0ab6b8a4-9933-4bba-8617-5e21dbe03ee3
+
+		changedProperty = Name
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Total Sales LY' = CALCULATE([Total Sales], SAMEPERIODLASTYEAR(Dates[Date]))
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: be067bbf-3195-4bac-9662-8cefe96c6508
+
+		changedProperty = Name
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Total Sales YoY' = DIVIDE([Total Sales] - [Total Sales LY], [Total Sales LY])
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: b8e0b29c-09a5-4cf3-ac65-148f20561a4f
+
+		changedProperty = Name
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Total Sales Rolling 12M' = CALCULATE([Total Sales], DATESINPERIOD(Dates[Date], MAX(Dates[Date]), -12, MONTH))
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 9f957221-fd5a-4550-831a-961af4ea3481
+
+		changedProperty = Name
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column DateID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 5e67eb91-4165-4aba-93b3-e550ce4e21c8
+		sourceLineageTag: DateID
+		summarizeBy: none
+		sourceColumn: DateID
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column Year
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 7607e71e-2d55-4bc6-97d2-3f8bbc91331f
+		sourceLineageTag: Year
+		summarizeBy: none
+		sourceColumn: Year
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column Month
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 4d906936-afbb-4168-a33d-69773a0e531e
+		sourceLineageTag: Month
+		summarizeBy: none
+		sourceColumn: Month
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column Day
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: dc6d1182-2db1-4b43-b18f-37287ab387d3
+		sourceLineageTag: Day
+		summarizeBy: none
+		sourceColumn: Day
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column 'Month Name'
+		dataType: string
+		sourceProviderType: varchar(50)
+		lineageTag: bae6133e-5e30-45a5-8816-a2ecc1e4065f
+		sourceLineageTag: MonthName
+		summarizeBy: none
+		sourceColumn: MonthName
+		sortByColumn: Month
+
+		changedProperty = Name
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Day Name'
+		dataType: string
+		sourceProviderType: varchar(50)
+		lineageTag: 7fc3687f-fe35-4101-a393-b39a5b1280d7
+		sourceLineageTag: DayName
+		summarizeBy: none
+		sourceColumn: DayName
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: 8ecf97bf-6e50-4fd9-85ce-2ed570c063a0
+		sourceLineageTag: Date
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'Date Hierarchy'
+		lineageTag: bbb7f4d8-c2d3-445f-be6f-0615496f63d7
+
+		level Year
+			lineageTag: b1d57452-ee23-4fb1-8358-0c050470811c
+			column: Year
+
+		level 'Month Name'
+			lineageTag: 36848c78-f739-4143-895d-424ffc0a94ea
+			column: 'Month Name'
+
+		level 'Day Name'
+			lineageTag: 4b4a8da2-7872-4546-b808-9190053b74b0
+			column: 'Day Name'
+
+		changedProperty = Name
+
+	partition Dates = entity
+		mode: directLake
+		source
+			entityName: Dates
+			schemaName: WHS
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

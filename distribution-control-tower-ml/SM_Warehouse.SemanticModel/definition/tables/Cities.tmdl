@@ -1,0 +1,156 @@
+table Cities
+	lineageTag: 9c1efbfa-658b-43ef-b101-e5de8077eff2
+	sourceLineageTag: [WHS].[Cities]
+
+	column 'City ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 8b27b55f-f728-46cf-957d-872d04ccf442
+		sourceLineageTag: CityID
+		summarizeBy: none
+		sourceColumn: CityID
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		sourceProviderType: varchar(100)
+		lineageTag: 28859abd-f8b2-41ba-b4ac-7fd8d43a0987
+		sourceLineageTag: CityName
+		summarizeBy: none
+		sourceColumn: CityName
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Longitude
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 5f9f3405-6898-4dab-a095-636d89a217dd
+		sourceLineageTag: Longitude
+		dataCategory: Longitude
+		summarizeBy: none
+		sourceColumn: Longitude
+
+		changedProperty = SummarizeBy
+
+		changedProperty = DataCategory
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Latitude
+		dataType: double
+		sourceProviderType: float
+		lineageTag: b1e4a9e3-c77c-48f2-8c62-2e891f037785
+		sourceLineageTag: Latitude
+		dataCategory: Latitude
+		summarizeBy: none
+		sourceColumn: Latitude
+
+		changedProperty = SummarizeBy
+
+		changedProperty = DataCategory
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Province ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 47ab230d-8160-41f0-bee7-25fadca80d04
+		sourceLineageTag: StateProvinceID
+		summarizeBy: none
+		sourceColumn: StateProvinceID
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Population
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 85c3ecd1-4116-4b03-8189-4ffce009acae
+		sourceLineageTag: LatestRecordedPopulation
+		summarizeBy: none
+		sourceColumn: LatestRecordedPopulation
+
+		changedProperty = Name
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column 'Last Edited By'
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: d7f4284d-ca5b-45e7-94c7-aa20ae564d9e
+		sourceLineageTag: LastEditedBy
+		summarizeBy: none
+		sourceColumn: LastEditedBy
+
+		changedProperty = Name
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column 'Valid From'
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 052b3aa6-7a75-4386-a53c-a893785160c4
+		sourceLineageTag: ValidFrom
+		summarizeBy: none
+		sourceColumn: ValidFrom
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valid To'
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: ad7af6ea-c640-4ebb-8537-5c3af745fae0
+		sourceLineageTag: ValidTo
+		summarizeBy: none
+		sourceColumn: ValidTo
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Cities = entity
+		mode: directLake
+		source
+			entityName: Cities
+			schemaName: WHS
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

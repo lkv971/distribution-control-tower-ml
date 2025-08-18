@@ -1,0 +1,180 @@
+table 'StockItem Holdings'
+	lineageTag: 4254c993-b12c-48f1-944c-43dbc871c104
+	sourceLineageTag: [WHS].[StockItemHoldings]
+
+	measure 'Qty On Hand' =
+			
+			SUM ('StockItem Holdings'[Quantity On Hand])
+		formatString: 0
+		displayFolder: Inventory Measures
+		lineageTag: c7086b1b-97cc-4d68-b8a8-7c846333adc5
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+	measure 'Reorder Breaches' = COUNTROWS(FILTER('StockItem Holdings', 'StockItem Holdings'[Quantity On Hand] < 'StockItem Holdings'[Reorder Level]))
+		formatString: 0
+		displayFolder: Inventory Measures
+		lineageTag: 14af064c-7c9d-41a3-b911-7195171d7324
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+	measure 'Stock Value' = SUMX('StockItem Holdings', COALESCE('StockItem Holdings'[Quantity On Hand], 0) * COALESCE('StockItem Holdings'[Last Cost Price], 0))
+		displayFolder: Inventory Measures
+		lineageTag: 9b9dd277-b86f-4d3f-93b4-726e225da353
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column StockItemID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 392e347b-65c0-41ff-a147-5cf9a52fe39b
+		sourceLineageTag: StockItemID
+		summarizeBy: none
+		sourceColumn: StockItemID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Quantity On Hand'
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: c083b44d-0c11-4230-9809-ba6bf74f8832
+		sourceLineageTag: QuantityOnHand
+		summarizeBy: none
+		sourceColumn: QuantityOnHand
+
+		changedProperty = Name
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column 'Bin Location'
+		dataType: string
+		sourceProviderType: varchar(50)
+		lineageTag: a83d3144-fcf9-4948-94ca-39ad4890f7d9
+		sourceLineageTag: BinLocation
+		summarizeBy: none
+		sourceColumn: BinLocation
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Last Stocktake Quantity'
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 3b62ed0e-cd12-488b-81db-8a11fa85dc59
+		sourceLineageTag: LastStocktakeQuantity
+		summarizeBy: none
+		sourceColumn: LastStocktakeQuantity
+
+		changedProperty = Name
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column 'Last Cost Price'
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		sourceProviderType: float
+		lineageTag: 57630ef5-2169-4db0-a026-631e731d8436
+		sourceLineageTag: LastCostPrice
+		summarizeBy: none
+		sourceColumn: LastCostPrice
+
+		changedProperty = Name
+
+		changedProperty = SummarizeBy
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column 'Reorder Level'
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: a3c9c6b2-23b7-484e-9808-9dd5f56da243
+		sourceLineageTag: ReorderLevel
+		summarizeBy: none
+		sourceColumn: ReorderLevel
+
+		changedProperty = Name
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column 'Target Stock Level'
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: a12f3a13-3372-4f8f-9aec-46915a313314
+		sourceLineageTag: TargetStockLevel
+		summarizeBy: none
+		sourceColumn: TargetStockLevel
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+	column LastEditedBy
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: b38fc387-cfca-4dfd-80f0-02db4128c7f2
+		sourceLineageTag: LastEditedBy
+		summarizeBy: none
+		sourceColumn: LastEditedBy
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column LastEditedWhen
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: d80ecb4b-cfcf-468e-8002-40e4ffb0b69f
+		sourceLineageTag: LastEditedWhen
+		summarizeBy: none
+		sourceColumn: LastEditedWhen
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'StockItem Holdings' = entity
+		mode: directLake
+		source
+			entityName: StockItemHoldings
+			schemaName: WHS
+			expressionSource: DatabaseQuery
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

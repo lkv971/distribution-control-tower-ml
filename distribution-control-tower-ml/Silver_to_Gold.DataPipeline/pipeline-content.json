@@ -1,0 +1,213 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "Lookup",
+        "typeProperties": {
+          "source": {
+            "type": "JsonSource",
+            "formatSettings": {
+              "type": "JsonReadSettings"
+            },
+            "storeSettings": {
+              "type": "LakehouseReadSettings",
+              "recursive": true,
+              "enablePartitionDiscovery": false
+            }
+          },
+          "datasetSettings": {
+            "type": "Json",
+            "typeProperties": {
+              "location": {
+                "type": "LakehouseLocation",
+                "folderPath": "watermarks",
+                "fileName": "Watermark.json"
+              }
+            },
+            "schema": {},
+            "linkedService": {
+              "name": "LH_Silver",
+              "properties": {
+                "type": "Lakehouse",
+                "typeProperties": {
+                  "artifactId": "065aae10-e93d-929b-4c12-76a3eeca8fd3",
+                  "workspaceId": "00000000-0000-0000-0000-000000000000",
+                  "rootFolder": "Files"
+                },
+                "annotations": []
+              }
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "LookupSilverLayer",
+        "dependsOn": []
+      },
+      {
+        "type": "Lookup",
+        "typeProperties": {
+          "source": {
+            "type": "DataWarehouseSource",
+            "sqlReaderQuery": "SELECT COALESCE(MAX(ProcessedTime),\r\nCAST('1960-01-01 00:00:00.000' AS DATETIME2(3)))\r\nAS LastRunTime\r\nFROM WHS.IngestionLogs;",
+            "partitionOption": "None",
+            "queryTimeout": "02:00:00"
+          },
+          "datasetSettings": {
+            "type": "DataWarehouseTable",
+            "schema": [],
+            "linkedService": {
+              "name": "WH_Gold",
+              "properties": {
+                "type": "DataWarehouse",
+                "typeProperties": {
+                  "artifactId": "40c2231f-d85d-400a-ae4e-33779b0137f4",
+                  "endpoint": "mpyijd7bpuruxf35j6dzo37vp4-tobgayqurhquhoxa6hpp2akgdq.datawarehouse.fabric.microsoft.com",
+                  "workspaceId": "6260829b-8914-43e1-bae0-f1defd01461c"
+                },
+                "annotations": []
+              }
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "LookupIngestionLogs",
+        "dependsOn": [
+          {
+            "activity": "LookupSilverLayer",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "IfCondition",
+        "typeProperties": {
+          "expression": {
+            "value": "@greater(activity('LookupSilverLayer').output.firstRow.lastModified, activity('LookupIngestionLogs').output.firstRow.lastRunTime)",
+            "type": "Expression"
+          },
+          "ifTrueActivities": [
+            {
+              "type": "Script",
+              "typeProperties": {
+                "scripts": [
+                  {
+                    "text": {
+                      "value": "DROP VIEW IF EXISTS WHS.Staging_Cities;\r\nEXEC('CREATE View WHS.Staging_Cities\r\nAS SELECT DISTINCT\r\nCityID,\r\nCityName,\r\nLongitude,\r\nLatitude,\r\nStateProvinceID,\r\nLatestRecordedPopulation,\r\nLastEditedBy,\r\nValidFrom,\r\nValidTo\r\nFROM LH_Silver.dbo.ApplicationCities\r\n;');\r\n\r\nDROP VIEW IF EXISTS WHS.Staging_StateProvinces;\r\nEXEC('CREATE VIEW WHS.Staging_StateProvinces\r\nAS SELECT DISTINCT\r\nStateProvinceID,\r\nStateProvinceCode,\r\nStateProvinceName,\r\nCountryID,\r\nSalesTerritory,\r\nLatestRecordedPopulation,\r\nLastEditedBy,\r\nValidFrom,\r\nValidTo\r\nFROM LH_Silver.dbo.ApplicationStateProvinces\r\n;');\r\n\r\nDROP VIEW IF EXISTS WHS.Staging_Countries;\r\nEXEC('CREATE VIEW WHS.Staging_Countries\r\nAS SELECT DISTINCT\r\nCountryID,\r\nCountryName,\r\nFormalName,\r\nIsoAlpha3Code,\r\nCountryType,\r\nLatestRecordedPopulation,\r\nContinent,\r\nRegion,\r\nSubregion,\r\nLastEditedBy,\r\nValidFrom,\r\nValidTo\r\nFROM LH_Silver.dbo.ApplicationCountries\r\n;');\r\n\r\nDROP VIEW IF EXISTS WHS.Staging_DeliveryMethods;\r\nEXEC('CREATE VIEW WHS.Staging_DeliveryMethods\r\nAS SELECT DISTINCT\r\nDeliveryMethodID,\r\nDeliveryMethodName,\r\nLastEditedBy,\r\nValidFrom,\r\nValidTo\r\nFROM LH_Silver.dbo.ApplicationDeliveryMethods\r\n;');\r\n\r\nDROP VIEW IF EXISTS WHS.Staging_People;\r\nEXEC('CREATE VIEW WHS.Staging_People\r\nAS SELECT DISTINCT\r\nPersonID,\r\nFullName,\r\nPreferredName,\r\nSearchName,\r\nIsPermittedToLogon,\r\nLogonName,\r\nIsExternalLogonProvider,\r\nIsSystemUser,\r\nIsEmployee,\r\nIsSalesperson,\r\nPhoneNumber,\r\nFaxNumber,\r\nEmailAddress,\r\nLastEditedBy,\r\nValidFrom,\r\nValidTo\r\nFROM LH_Silver.dbo.ApplicationPeople\r\n;');\r\n\r\nDROP VIEW IF EXISTS WHS.Staging_Customers;\r\nEXEC('CREATE VIEW WHS.Staging_Customers\r\nAS SELECT DISTINCT\r\nCustomerID,\r\nCustomerName,\r\nBillToCustomerID,\r\nCustomerCategoryID,\r\nPrimaryContactPersonID,\r\nDeliveryMethodID,\r\nDeliveryCityID,\r\nCreditLimit,\r\nAccountOpenedDate,\r\nStandardDiscountPercentage,\r\nPaymentDays,\r\nPhoneNumber,\r\nFaxNumber,\r\nDeliveryAddressLine1,\r\nDeliveryAddressLine2,\r\nDeliveryPostalCode,\r\nPostalAddressLine1,\r\nLastEditedBy,\r\nValidFrom,\r\nValidTo\r\nFROM LH_Silver.dbo.SalesCustomers\r\n;');\r\n\r\nDROP VIEW IF EXISTS WHS.Staging_CustomerCategories;\r\nEXEC('CREATE VIEW WHS.Staging_CustomerCategories\r\nAS SELECT DISTINCT\r\nCustomerCategoryID,\r\nCustomerCategoryName,\r\nLastEditedBy,\r\nValidFrom,\r\nValidTo\r\nFROM LH_Silver.dbo.SalesCustomerCategories\r\n;');\r\n\r\nDROP VIEW IF EXISTS WHS.Staging_Invoices;\r\nEXEC('CREATE VIEW WHS.Staging_Invoices \r\nAS SELECT DISTINCT\r\nInvoiceID,\r\nCustomerID,\r\nBillToCustomerID,\r\nOrderID,\r\nDeliveryMethodID,\r\nContactPersonID,\r\nAccountsPersonID,\r\nSalespersonPersonID,\r\nPackedByPersonID,\r\nInvoiceDate,\r\nIsCreditNote,\r\nDeliveryInstructions,\r\nTotalDryItems,\r\nTotalChillerItems,\r\nConfirmedDeliveryTime,\r\nConfirmedReceivedBy,\r\nLastEditedBy,\r\nLastEditedWhen\r\nFROM LH_Silver.dbo.SalesInvoices\r\n;');\r\n\r\nDROP VIEW IF EXISTS WHS.Staging_OrderLines;\r\nEXEC('CREATE VIEW WHS.Staging_OrderLines \r\nAS SELECT DISTINCT\r\nOrderLineID,\r\nOrderID,\r\nStockItemID,\r\nDescription,\r\nPackageTypeID,\r\nQuantity,\r\nUnitPrice,\r\nTaxRate,\r\nPickedQuantity,\r\nPickingCompletedWhen,\r\nLastEditedBy,\r\nLastEditedWhen\r\nFROM LH_Silver.dbo.SalesOrderLines\r\n;');\r\n\r\nDROP VIEW IF EXISTS WHS.Staging_Orders;\r\nEXEC('CREATE VIEW WHS.Staging_Orders\r\nAS SELECT DISTINCT\r\nOrderID,\r\nCustomerID,\r\nSalespersonPersonID,\r\nPickedByPersonID,\r\nContactPersonID,\r\nOrderDate,\r\nExpectedDeliveryDate,\r\nPickingCompletedWhen,\r\nLastEditedBy,\r\nLastEditedWhen\r\nFROM LH_Silver.dbo.SalesOrders\r\n;');\r\n\r\nDROP VIEW IF EXISTS WHS.Staging_PackageTypes;\r\nEXEC('CREATE VIEW WHS.Staging_PackageTypes\r\nAS SELECT DISTINCT\r\nPackageTypeID,\r\nPackageTypeName,\r\nLastEditedBy,\r\nValidFrom,\r\nValidTo\r\nFROM LH_Silver.dbo.WarehousePackageTypes\r\n;');\r\n\r\nDROP VIEW IF EXISTS WHS.Staging_StockItemHoldings;\r\nEXEC('CREATE VIEW WHS.Staging_StockItemHoldings \r\nAS SELECT DISTINCT\r\nStockItemID,\r\nQuantityOnHand,\r\nBinLocation,\r\nLastStocktakeQuantity,\r\nLastCostPrice,\r\nReorderLevel,\r\nTargetStockLevel,\r\nLastEditedBy,\r\nLastEditedWhen\r\nFROM LH_Silver.dbo.WarehouseStockItemHoldings\r\n;');\r\n\r\nDROP VIEW IF EXISTS WHS.Staging_StockItems;\r\nEXEC('CREATE VIEW WHS.Staging_StockItems\r\nAS SELECT DISTINCT\r\nStockItemID,\r\nStockItemName,\r\nUnitPackageID,\r\nOuterPackageID,\r\nLeadTimeDays,\r\nQuantityPerOuter,\r\nIsChillerStock,\r\nTaxRate,\r\nUnitPrice,\r\nRecommendedRetailPrice,\r\nTypicalWeightPerUnit,\r\nCountryOfManufacture,\r\nProductTags,\r\nLastEditedBy,\r\nValidFrom,\r\nValidTo\r\nFROM LH_Silver.dbo.WarehouseStockItems\r\n;');\r\n\r\nDROP VIEW IF EXISTS WHS.Staging_Dates;\r\nEXEC('CREATE VIEW WHS.Staging_Dates\r\nAS SELECT DISTINCT\r\nDateID,\r\nDate,\r\nYear,\r\nMonth,\r\nDay,\r\nMonthName,\r\nDayName\r\nFROM LH_Silver.dbo.dates\r\n;');\r\n\r\n",
+                      "type": "Expression"
+                    },
+                    "type": "NonQuery"
+                  }
+                ],
+                "scriptBlockExecutionTimeout": "02:00:00"
+              },
+              "linkedService": {
+                "name": "WH_Gold",
+                "properties": {
+                  "type": "DataWarehouse",
+                  "typeProperties": {
+                    "artifactId": "40c2231f-d85d-400a-ae4e-33779b0137f4",
+                    "endpoint": "mpyijd7bpuruxf35j6dzo37vp4-tobgayqurhquhoxa6hpp2akgdq.datawarehouse.fabric.microsoft.com",
+                    "workspaceId": "6260829b-8914-43e1-bae0-f1defd01461c"
+                  },
+                  "annotations": []
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "StagingViews",
+              "dependsOn": []
+            },
+            {
+              "type": "SqlServerStoredProcedure",
+              "typeProperties": {
+                "storedProcedureName": "[WHS].[sp_Upsert_Simple]"
+              },
+              "linkedService": {
+                "name": "WH_Gold",
+                "properties": {
+                  "type": "DataWarehouse",
+                  "typeProperties": {
+                    "artifactId": "40c2231f-d85d-400a-ae4e-33779b0137f4",
+                    "endpoint": "mpyijd7bpuruxf35j6dzo37vp4-tobgayqurhquhoxa6hpp2akgdq.datawarehouse.fabric.microsoft.com",
+                    "workspaceId": "6260829b-8914-43e1-bae0-f1defd01461c"
+                  },
+                  "annotations": []
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "UpsertProcedure",
+              "dependsOn": [
+                {
+                  "activity": "StagingViews",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "ba672139-b50d-ad97-4516-8b0d897b8989",
+                "workspaceId": "00000000-0000-0000-0000-000000000000"
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Update_Silver_watermark",
+              "dependsOn": [
+                {
+                  "activity": "UpsertProcedure",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            }
+          ],
+          "ifFalseActivities": []
+        },
+        "name": "LookupComparison",
+        "dependsOn": [
+          {
+            "activity": "LookupIngestionLogs",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,83 @@
+table 'Delivery Methods'
+	lineageTag: a48e4bb0-affd-454d-a06f-19baf3ac3b59
+	sourceLineageTag: [WHS].[DeliveryMethods]
+
+	column DeliveryMethodID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: add4fad2-c42b-4680-b2fd-ddc10bc432d9
+		sourceLineageTag: DeliveryMethodID
+		summarizeBy: none
+		sourceColumn: DeliveryMethodID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Delivery Method'
+		dataType: string
+		sourceProviderType: varchar(100)
+		lineageTag: 4a65b094-6439-4361-9c54-a3812aa8fb55
+		sourceLineageTag: DeliveryMethodName
+		summarizeBy: none
+		sourceColumn: DeliveryMethodName
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column LastEditedBy
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 2c2f8583-3aa4-4b1e-b800-de809f243dbe
+		sourceLineageTag: LastEditedBy
+		summarizeBy: none
+		sourceColumn: LastEditedBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidFrom
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: e49ad7b7-0222-4b00-b0f6-9b769787fd8b
+		sourceLineageTag: ValidFrom
+		summarizeBy: none
+		sourceColumn: ValidFrom
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidTo
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: a08961fa-dd09-4e5b-8aac-3796e100800b
+		sourceLineageTag: ValidTo
+		summarizeBy: none
+		sourceColumn: ValidTo
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Delivery Methods' = entity
+		mode: directLake
+		source
+			entityName: DeliveryMethods
+			schemaName: WHS
+			expressionSource: DatabaseQuery
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

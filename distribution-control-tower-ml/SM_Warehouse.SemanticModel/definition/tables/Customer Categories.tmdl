@@ -1,0 +1,83 @@
+table 'Customer Categories'
+	lineageTag: 5f4afe2a-c20f-4826-b7d0-050ae6b75143
+	sourceLineageTag: [WHS].[CustomerCategories]
+
+	column CustomerCategoryID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 75f04a8b-511d-4328-94c1-cd8497d1379c
+		sourceLineageTag: CustomerCategoryID
+		summarizeBy: none
+		sourceColumn: CustomerCategoryID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Customer Category'
+		dataType: string
+		sourceProviderType: varchar(100)
+		lineageTag: 0e4b37f7-b13e-4ef5-a0da-8033e75b25de
+		sourceLineageTag: CustomerCategoryName
+		summarizeBy: none
+		sourceColumn: CustomerCategoryName
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column LastEditedBy
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 1bf1cfe1-ef3f-4d45-b2cb-18ee31f2a930
+		sourceLineageTag: LastEditedBy
+		summarizeBy: none
+		sourceColumn: LastEditedBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidFrom
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 88737d0c-46d8-430d-a8bb-71e1d02612b7
+		sourceLineageTag: ValidFrom
+		summarizeBy: none
+		sourceColumn: ValidFrom
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidTo
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 44328d5f-d6cf-497b-9889-2e777872070b
+		sourceLineageTag: ValidTo
+		summarizeBy: none
+		sourceColumn: ValidTo
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Customer Categories' = entity
+		mode: directLake
+		source
+			entityName: CustomerCategories
+			schemaName: WHS
+			expressionSource: DatabaseQuery
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

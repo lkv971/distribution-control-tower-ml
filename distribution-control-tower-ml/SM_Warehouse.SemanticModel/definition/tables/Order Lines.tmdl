@@ -1,0 +1,251 @@
+table 'Order Lines'
+	lineageTag: b9320ac4-c1a1-4a5e-918a-35e7e468e2eb
+	sourceLineageTag: [WHS].[OrderLines]
+
+	measure 'Total Sales' = SUMX('Order Lines', 'Order Lines'[Quantity] * 'Order Lines'[Unit Price])
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Sales Measures
+		lineageTag: c114c9d0-0a08-4b88-974c-af3205c24340
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Total Sales incl Tax' = SUMX('Order Lines', 'Order Lines'[Quantity] * 'Order Lines'[Unit Price] * 'Order Lines'[Tax Rate])
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Sales Measures
+		lineageTag: 97879c55-f876-450c-b5d8-97c714b817c5
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Units Sold' = SUM('Order Lines'[Quantity])
+		formatString: 0
+		displayFolder: Sales Measures
+		lineageTag: 5d57e8a6-4a82-428d-9d4b-250df7ac1c94
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+	measure 'Average Selling Price' = DIVIDE([Total Sales], [Units Sold])
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Sales Measures
+		lineageTag: 0ed5098d-b9b5-428b-b11d-f6f7fceb48b7
+
+		changedProperty = DisplayFolder
+
+		changedProperty = Name
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column OrderLineID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 916a5cc3-98a0-4260-8633-83a621775f70
+		sourceLineageTag: OrderLineID
+		summarizeBy: none
+		sourceColumn: OrderLineID
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column OrderID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 3c32fb12-24a6-4f56-a575-ede0d7ec3ced
+		sourceLineageTag: OrderID
+		summarizeBy: none
+		sourceColumn: OrderID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column StockItemID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: e8c24e59-9a32-4637-ae54-4e6b4391351b
+		sourceLineageTag: StockItemID
+		summarizeBy: none
+		sourceColumn: StockItemID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Description
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(200)
+		lineageTag: e5afe45d-5de4-4289-a250-013bb981ad08
+		sourceLineageTag: Description
+		summarizeBy: none
+		sourceColumn: Description
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column PackageTypeID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: f858d355-38d5-410b-a06f-a650be244d05
+		sourceLineageTag: PackageTypeID
+		summarizeBy: none
+		sourceColumn: PackageTypeID
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column Quantity
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 591b0045-12ea-46b1-a43c-43b8809db787
+		sourceLineageTag: Quantity
+		summarizeBy: none
+		sourceColumn: Quantity
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column 'Unit Price'
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		sourceProviderType: float
+		lineageTag: c829a26e-708e-4f5f-953e-929c48634afc
+		sourceLineageTag: UnitPrice
+		summarizeBy: none
+		sourceColumn: UnitPrice
+
+		changedProperty = Name
+
+		changedProperty = SummarizeBy
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column 'Tax Rate'
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		sourceProviderType: float
+		lineageTag: dd279f85-2890-457d-adb1-ecd7472d7624
+		sourceLineageTag: TaxRate
+		summarizeBy: none
+		sourceColumn: TaxRate
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+	column 'Picked Quantity'
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 9ab586a2-8f57-43c6-969f-e3b03b484bb6
+		sourceLineageTag: PickedQuantity
+		summarizeBy: none
+		sourceColumn: PickedQuantity
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+	column 'Picking Completed When'
+		dataType: dateTime
+		formatString: Short Date
+		sourceProviderType: datetime2
+		lineageTag: 5f08c064-be68-4496-b3c8-84ab4e652bfa
+		sourceLineageTag: PickingCompletedWhen
+		summarizeBy: none
+		sourceColumn: PickingCompletedWhen
+
+		changedProperty = Name
+
+		changedProperty = DataType
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	column LastEditedBy
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 3a71f3d1-310a-4923-8243-48a2c5c32fe0
+		sourceLineageTag: LastEditedBy
+		summarizeBy: none
+		sourceColumn: LastEditedBy
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column LastEditedWhen
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 66dccccd-e8c5-44ba-9b9e-a59b6268cb5d
+		sourceLineageTag: LastEditedWhen
+		summarizeBy: none
+		sourceColumn: LastEditedWhen
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Order Lines' = entity
+		mode: directLake
+		source
+			entityName: OrderLines
+			schemaName: WHS
+			expressionSource: DatabaseQuery
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

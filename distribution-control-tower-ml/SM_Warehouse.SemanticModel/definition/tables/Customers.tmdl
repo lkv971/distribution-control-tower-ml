@@ -1,0 +1,324 @@
+table Customers
+	lineageTag: da7bb3c7-dd79-4f49-8576-7771eaa3ffad
+	sourceLineageTag: [WHS].[Customers]
+
+	measure 'Customers Count' = DISTINCTCOUNT(Customers[CustomerID])
+		formatString: 0
+		lineageTag: ca9e5c12-fd10-4fbd-acb9-3cfd0617f7c8
+
+		changedProperty = Name
+
+	column CustomerID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 0d1cc256-64eb-4d8f-8dc5-a44353c70068
+		sourceLineageTag: CustomerID
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Customer
+		dataType: string
+		sourceProviderType: varchar(100)
+		lineageTag: ca6af1e5-7b2f-4f7a-8ff7-7b595811464d
+		sourceLineageTag: CustomerName
+		summarizeBy: none
+		sourceColumn: CustomerName
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column BillToCustomerID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 4fb9af31-17dd-4eac-9595-25000b72f532
+		sourceLineageTag: BillToCustomerID
+		summarizeBy: none
+		sourceColumn: BillToCustomerID
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column CustomerCategoryID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: f104070e-76e0-4902-970c-9fb1a2889bef
+		sourceLineageTag: CustomerCategoryID
+		summarizeBy: none
+		sourceColumn: CustomerCategoryID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column PrimaryContactPersonID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 0405a187-83b2-4866-b6c2-e98a0cf312ed
+		sourceLineageTag: PrimaryContactPersonID
+		summarizeBy: none
+		sourceColumn: PrimaryContactPersonID
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column DeliveryMethodID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: fe9554bc-5666-448d-8c80-56e382ea3ea5
+		sourceLineageTag: DeliveryMethodID
+		summarizeBy: none
+		sourceColumn: DeliveryMethodID
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column DeliveryCityID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: c5612ab0-3e05-49ec-a1a6-c39d7191b191
+		sourceLineageTag: DeliveryCityID
+		summarizeBy: none
+		sourceColumn: DeliveryCityID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Credit Limit'
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		sourceProviderType: float
+		lineageTag: 845006d2-4022-4592-866e-38a0aec46360
+		sourceLineageTag: CreditLimit
+		summarizeBy: none
+		sourceColumn: CreditLimit
+
+		changedProperty = Name
+
+		changedProperty = SummarizeBy
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column 'Account Opened Date'
+		dataType: dateTime
+		formatString: Short Date
+		sourceProviderType: date
+		lineageTag: cc9b3033-b566-46a9-bdfb-02d4c3a72e12
+		sourceLineageTag: AccountOpenedDate
+		summarizeBy: none
+		sourceColumn: AccountOpenedDate
+
+		changedProperty = Name
+
+		changedProperty = DataType
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	column 'Discount Percentage'
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		sourceProviderType: float
+		lineageTag: 492a1328-2e04-42ac-9eda-e7f210591b1e
+		sourceLineageTag: StandardDiscountPercentage
+		summarizeBy: none
+		sourceColumn: StandardDiscountPercentage
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+	column 'Payment Days'
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 1211f621-a7f5-4ce3-bc1e-82dc7aae18c5
+		sourceLineageTag: PaymentDays
+		summarizeBy: none
+		sourceColumn: PaymentDays
+
+		changedProperty = Name
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column PhoneNumber
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(20)
+		lineageTag: 0ec9226f-814e-4e0c-9250-98409c01a993
+		sourceLineageTag: PhoneNumber
+		summarizeBy: none
+		sourceColumn: PhoneNumber
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column FaxNumber
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(20)
+		lineageTag: ac7476da-1a0a-4c67-bc49-dec19d20af96
+		sourceLineageTag: FaxNumber
+		summarizeBy: none
+		sourceColumn: FaxNumber
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DeliveryAddressLine1
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(200)
+		lineageTag: 9200c233-abf4-42c0-b965-4475aa65f0a6
+		sourceLineageTag: DeliveryAddressLine1
+		summarizeBy: none
+		sourceColumn: DeliveryAddressLine1
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DeliveryAddressLine2
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(200)
+		lineageTag: 87a8ee8b-3c9e-4ff7-a429-ad7dd086fdae
+		sourceLineageTag: DeliveryAddressLine2
+		summarizeBy: none
+		sourceColumn: DeliveryAddressLine2
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DeliveryPostalCode
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(100)
+		lineageTag: a4002415-a940-412c-9935-6e7b1a51a5af
+		sourceLineageTag: DeliveryPostalCode
+		summarizeBy: none
+		sourceColumn: DeliveryPostalCode
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column PostalAddressLine1
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(200)
+		lineageTag: ce64b5ca-de70-4c05-87bd-6e4c7374103c
+		sourceLineageTag: PostalAddressLine1
+		summarizeBy: none
+		sourceColumn: PostalAddressLine1
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column LastEditedBy
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 070e787c-9cf5-44b8-ae53-b74f18a2b271
+		sourceLineageTag: LastEditedBy
+		summarizeBy: none
+		sourceColumn: LastEditedBy
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column ValidFrom
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: e872f7a1-9c93-4041-b4cf-7c6481127693
+		sourceLineageTag: ValidFrom
+		summarizeBy: none
+		sourceColumn: ValidFrom
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidTo
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 2872f2e0-199f-4b6b-a11a-cfb3b31a483b
+		sourceLineageTag: ValidTo
+		summarizeBy: none
+		sourceColumn: ValidTo
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'Customer Hierarchy'
+		lineageTag: 97e617fa-fc15-4366-80e9-333851da0792
+
+		level CustomerCategoryID
+			lineageTag: 61a813fc-d3b9-49d8-a4a0-9239464de4f7
+			column: CustomerCategoryID
+
+		changedProperty = Name
+
+	partition Customers = entity
+		mode: directLake
+		source
+			entityName: Customers
+			schemaName: WHS
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

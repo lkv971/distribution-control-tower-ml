@@ -1,0 +1,144 @@
+table Provinces
+	lineageTag: 77174098-beb1-4803-bc29-184c2a169f19
+	sourceLineageTag: [WHS].[StateProvinces]
+
+	column StateProvinceID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 54c5516b-283b-446d-b7c1-cecb32e93805
+		sourceLineageTag: StateProvinceID
+		summarizeBy: none
+		sourceColumn: StateProvinceID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Province Code'
+		dataType: string
+		sourceProviderType: varchar(10)
+		lineageTag: 83c93e7b-9325-4b4f-b430-a0ad2b5de155
+		sourceLineageTag: StateProvinceCode
+		summarizeBy: none
+		sourceColumn: StateProvinceCode
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Province
+		dataType: string
+		sourceProviderType: varchar(100)
+		lineageTag: a1662586-793f-437c-9116-bc3250691005
+		sourceLineageTag: StateProvinceName
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: StateProvinceName
+
+		changedProperty = Name
+
+		changedProperty = DataCategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column CountryID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 5eb7cf92-2036-4559-a0ed-82de655cf648
+		sourceLineageTag: CountryID
+		summarizeBy: none
+		sourceColumn: CountryID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sales Territory'
+		dataType: string
+		sourceProviderType: varchar(100)
+		lineageTag: 4770e08a-e114-4384-93fa-d057ce06b88f
+		sourceLineageTag: SalesTerritory
+		dataCategory: Country
+		summarizeBy: none
+		sourceColumn: SalesTerritory
+
+		changedProperty = Name
+
+		changedProperty = DataCategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column Population
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 961ab445-650f-41a7-bdf8-009a97670821
+		sourceLineageTag: LatestRecordedPopulation
+		summarizeBy: none
+		sourceColumn: LatestRecordedPopulation
+
+		changedProperty = Name
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column LastEditedBy
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 938a057b-c2f3-4d99-bfff-a83f5b2ec1ef
+		sourceLineageTag: LastEditedBy
+		summarizeBy: none
+		sourceColumn: LastEditedBy
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column ValidFrom
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 9524883c-e1a1-48bc-a865-1234e52a8a0d
+		sourceLineageTag: ValidFrom
+		summarizeBy: none
+		sourceColumn: ValidFrom
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidTo
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 5e647bef-9ac0-46ae-898a-989f64a4d985
+		sourceLineageTag: ValidTo
+		summarizeBy: none
+		sourceColumn: ValidTo
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Provinces = entity
+		mode: directLake
+		source
+			entityName: StateProvinces
+			schemaName: WHS
+			expressionSource: DatabaseQuery
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

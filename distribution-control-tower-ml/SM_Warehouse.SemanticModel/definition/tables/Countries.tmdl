@@ -1,0 +1,205 @@
+table Countries
+	lineageTag: 6e885303-519c-4259-98fd-5c128e05ccd6
+	sourceLineageTag: [WHS].[Countries]
+
+	column 'Country ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 10a1820c-a6ef-4783-983e-fcd2c0f3b433
+		sourceLineageTag: CountryID
+		summarizeBy: none
+		sourceColumn: CountryID
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country
+		dataType: string
+		sourceProviderType: varchar(100)
+		lineageTag: af5df03a-df98-4db8-9fd7-e88c3dcfc8f4
+		sourceLineageTag: CountryName
+		dataCategory: Country
+		summarizeBy: none
+		sourceColumn: CountryName
+
+		changedProperty = Name
+
+		changedProperty = DataCategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Formal Name'
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(100)
+		lineageTag: 4533ded7-4b08-4974-9f3a-6827fcdd0ae8
+		sourceLineageTag: FormalName
+		summarizeBy: none
+		sourceColumn: FormalName
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Iso Alpha3 Code'
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(10)
+		lineageTag: 7115f07d-90cc-48d1-8912-19bd7624ba9a
+		sourceLineageTag: IsoAlpha3Code
+		summarizeBy: none
+		sourceColumn: IsoAlpha3Code
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Country Type'
+		dataType: string
+		sourceProviderType: varchar(100)
+		lineageTag: 398a3c7e-793f-4c0b-b663-73ede60195f3
+		sourceLineageTag: CountryType
+		summarizeBy: none
+		sourceColumn: CountryType
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Population
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 83a747b4-f3ca-4b96-984a-4ad35ac599d3
+		sourceLineageTag: LatestRecordedPopulation
+		summarizeBy: none
+		sourceColumn: LatestRecordedPopulation
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Continent
+		dataType: string
+		sourceProviderType: varchar(100)
+		lineageTag: 3e89dc09-5606-4b76-acbd-39e98569a3b9
+		sourceLineageTag: Continent
+		dataCategory: Continent
+		summarizeBy: none
+		sourceColumn: Continent
+
+		changedProperty = DataCategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column Region
+		dataType: string
+		sourceProviderType: varchar(100)
+		lineageTag: cbc9fed7-e8c9-43d1-a322-b9567588717d
+		sourceLineageTag: Region
+		dataCategory: Country
+		summarizeBy: none
+		sourceColumn: Region
+
+		changedProperty = DataCategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sub Region'
+		dataType: string
+		sourceProviderType: varchar(100)
+		lineageTag: f51af445-f005-4fa9-a00f-a0d3d2ffc1db
+		sourceLineageTag: Subregion
+		dataCategory: Country
+		summarizeBy: none
+		sourceColumn: Subregion
+
+		changedProperty = Name
+
+		changedProperty = DataCategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Last Edited By'
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 6af8e2f9-4518-4f87-b679-a2226ff8bdcd
+		sourceLineageTag: LastEditedBy
+		summarizeBy: none
+		sourceColumn: LastEditedBy
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidFrom
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: c6a868cb-a674-4858-9bf3-6d4291f53fdd
+		sourceLineageTag: ValidFrom
+		summarizeBy: none
+		sourceColumn: ValidFrom
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidTo
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: dd270c2c-c541-4284-9892-cc70a951a3d3
+		sourceLineageTag: ValidTo
+		summarizeBy: none
+		sourceColumn: ValidTo
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'Continent Hierarchy'
+		lineageTag: d3ee01d5-6878-433f-b206-d787d6a9f7f7
+
+		level Continent
+			lineageTag: 71b2ef92-3f60-4198-b99a-fd4e9b4f42e4
+			column: Continent
+
+		level Region
+			lineageTag: fb4e2da5-7080-48d4-a21f-41f7f87b18aa
+			column: Region
+
+		level 'Sub Region'
+			lineageTag: f30d2e22-a829-4182-9f9b-1f50a1b960e7
+			column: 'Sub Region'
+
+		level Country
+			lineageTag: 5f7d2271-828c-4751-a3af-59ca240c705b
+			column: Country
+
+		changedProperty = Name
+
+	partition Countries = entity
+		mode: directLake
+		source
+			entityName: Countries
+			schemaName: WHS
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

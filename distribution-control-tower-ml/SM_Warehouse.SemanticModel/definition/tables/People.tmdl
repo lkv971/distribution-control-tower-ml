@@ -1,0 +1,224 @@
+table People
+	lineageTag: 5a7c2b2e-a023-4e31-8268-e08536553426
+	sourceLineageTag: [WHS].[People]
+
+	column PersonID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 5726d955-ce9e-4602-b6de-d69b746cd4bf
+		sourceLineageTag: PersonID
+		summarizeBy: none
+		sourceColumn: PersonID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column FullName
+		dataType: string
+		sourceProviderType: varchar(100)
+		lineageTag: 7c21a06d-6f25-44a8-bab9-5999f4bc0087
+		sourceLineageTag: FullName
+		summarizeBy: none
+		sourceColumn: FullName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column PreferredName
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(100)
+		lineageTag: acb5143e-10a4-4d84-a80c-c722110c568b
+		sourceLineageTag: PreferredName
+		summarizeBy: none
+		sourceColumn: PreferredName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column SearchName
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(100)
+		lineageTag: f74f2e88-d450-4bdc-a937-2678e2a7f451
+		sourceLineageTag: SearchName
+		summarizeBy: none
+		sourceColumn: SearchName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsPermittedToLogon
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(10)
+		lineageTag: 74afca62-8d97-47a2-b6f1-3c21ecbf81b8
+		sourceLineageTag: IsPermittedToLogon
+		summarizeBy: none
+		sourceColumn: IsPermittedToLogon
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column LogonName
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(100)
+		lineageTag: 479b8e10-f5b5-45ac-8f25-1a69d6115694
+		sourceLineageTag: LogonName
+		summarizeBy: none
+		sourceColumn: LogonName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsExternalLogonProvider
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(10)
+		lineageTag: e515bf44-869e-482f-854f-22c4c45ce220
+		sourceLineageTag: IsExternalLogonProvider
+		summarizeBy: none
+		sourceColumn: IsExternalLogonProvider
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsSystemUser
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(10)
+		lineageTag: 2fcb450b-3ab7-4a77-9e97-9ce7b9976dc2
+		sourceLineageTag: IsSystemUser
+		summarizeBy: none
+		sourceColumn: IsSystemUser
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Is Employee'
+		dataType: string
+		sourceProviderType: varchar(10)
+		lineageTag: 99e282a3-24cf-45a6-a673-4286f00a0a03
+		sourceLineageTag: IsEmployee
+		summarizeBy: none
+		sourceColumn: IsEmployee
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Is Salesperson'
+		dataType: string
+		sourceProviderType: varchar(10)
+		lineageTag: 18504b1d-5587-46a9-a3ac-f1aeed4037db
+		sourceLineageTag: IsSalesperson
+		summarizeBy: none
+		sourceColumn: IsSalesperson
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column PhoneNumber
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(20)
+		lineageTag: 60adece1-5b40-4d45-a833-f7e3b85df210
+		sourceLineageTag: PhoneNumber
+		summarizeBy: none
+		sourceColumn: PhoneNumber
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column FaxNumber
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(20)
+		lineageTag: faeba277-b235-4180-ba60-46075d23c71e
+		sourceLineageTag: FaxNumber
+		summarizeBy: none
+		sourceColumn: FaxNumber
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column EmailAddress
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(100)
+		lineageTag: 4370a5c7-a880-4b32-a202-663745a17fa8
+		sourceLineageTag: EmailAddress
+		summarizeBy: none
+		sourceColumn: EmailAddress
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column LastEditedBy
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 7670f13b-4e79-45a6-9844-1bb1b8c577c7
+		sourceLineageTag: LastEditedBy
+		summarizeBy: none
+		sourceColumn: LastEditedBy
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column ValidFrom
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: ae9df7a8-bcbe-4e85-92e4-9060806f110e
+		sourceLineageTag: ValidFrom
+		summarizeBy: none
+		sourceColumn: ValidFrom
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidTo
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 9d488c22-d685-4e17-942e-d760845296a0
+		sourceLineageTag: ValidTo
+		summarizeBy: none
+		sourceColumn: ValidTo
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition People = entity
+		mode: directLake
+		source
+			entityName: People
+			schemaName: WHS
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,186 @@
+table Orders
+	lineageTag: 76c7c804-0d23-4a24-a9a6-f547b4194be9
+	sourceLineageTag: [WHS].[Orders]
+
+	measure 'Orders Count' = DISTINCTCOUNT(Orders[OrderID])
+		formatString: 0
+		lineageTag: a1ecf94f-0d87-4e11-ac11-85af52d0d062
+
+		changedProperty = Name
+
+	column OrderID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 56133c56-c4fd-441d-a066-0af42f3c931f
+		sourceLineageTag: OrderID
+		summarizeBy: none
+		sourceColumn: OrderID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 0749f392-52a5-4c4c-99c2-f68523468dea
+		sourceLineageTag: CustomerID
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalespersonPersonID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 0cfb9776-f6d2-43a6-871c-5752481b500c
+		sourceLineageTag: SalespersonPersonID
+		summarizeBy: none
+		sourceColumn: SalespersonPersonID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column PickedByPersonID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: b879e3b8-8e0b-4405-a1e7-20ccb5c2db80
+		sourceLineageTag: PickedByPersonID
+		summarizeBy: none
+		sourceColumn: PickedByPersonID
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column ContactPersonID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 59f0b98d-e4a6-4813-b5d2-436b3544c3c5
+		sourceLineageTag: ContactPersonID
+		summarizeBy: none
+		sourceColumn: ContactPersonID
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column 'Order Date'
+		dataType: dateTime
+		formatString: Short Date
+		sourceProviderType: date
+		lineageTag: a7fd9100-5798-4e41-9f59-0c8ae124ebe1
+		sourceLineageTag: OrderDate
+		summarizeBy: none
+		sourceColumn: OrderDate
+
+		changedProperty = Name
+
+		changedProperty = DataType
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	column 'Expected Delivery Date'
+		dataType: dateTime
+		formatString: Short Date
+		sourceProviderType: date
+		lineageTag: 717f0a33-654c-4219-851d-1fe522de581c
+		sourceLineageTag: ExpectedDeliveryDate
+		summarizeBy: none
+		sourceColumn: ExpectedDeliveryDate
+
+		changedProperty = Name
+
+		changedProperty = DataType
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	column 'Picking Completed When'
+		dataType: dateTime
+		formatString: Short Date
+		sourceProviderType: datetime2
+		lineageTag: 412e8755-1009-44b8-8bcc-60fc9ce0a39c
+		sourceLineageTag: PickingCompletedWhen
+		summarizeBy: none
+		sourceColumn: PickingCompletedWhen
+
+		changedProperty = Name
+
+		changedProperty = DataType
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	column LastEditedBy
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: b99b076f-6ea1-4fb4-a165-4b7432a2e9fa
+		sourceLineageTag: LastEditedBy
+		summarizeBy: none
+		sourceColumn: LastEditedBy
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column LastEditedWhen
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 9ef1e01f-1ccc-4255-acfc-4f8ca1e4b6ba
+		sourceLineageTag: LastEditedWhen
+		summarizeBy: none
+		sourceColumn: LastEditedWhen
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Orders = entity
+		mode: directLake
+		source
+			entityName: Orders
+			schemaName: WHS
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

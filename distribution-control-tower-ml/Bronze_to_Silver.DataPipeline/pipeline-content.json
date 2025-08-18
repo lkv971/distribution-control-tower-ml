@@ -1,0 +1,180 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "Lookup",
+        "typeProperties": {
+          "source": {
+            "type": "SqlServerSource",
+            "sqlReaderQuery": "SELECT MAX(OrderDate) AS latestorder FROM Sales.Orders;",
+            "partitionOption": "None",
+            "queryTimeout": "02:00:00"
+          },
+          "datasetSettings": {
+            "type": "SqlServerTable",
+            "typeProperties": {
+              "database": "WideWorldImporters"
+            },
+            "schema": [],
+            "externalReferences": {
+              "connection": "d229e438-f50c-46bb-8bac-0a0e0306b5c8"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "LookupSSMS",
+        "dependsOn": []
+      },
+      {
+        "type": "Lookup",
+        "typeProperties": {
+          "source": {
+            "type": "JsonSource",
+            "formatSettings": {
+              "type": "JsonReadSettings"
+            },
+            "storeSettings": {
+              "type": "LakehouseReadSettings",
+              "recursive": true,
+              "enablePartitionDiscovery": false
+            }
+          },
+          "datasetSettings": {
+            "type": "Json",
+            "typeProperties": {
+              "location": {
+                "type": "LakehouseLocation",
+                "folderPath": "watermarks",
+                "fileName": "Watermark.json"
+              }
+            },
+            "schema": {},
+            "linkedService": {
+              "name": "LH_Bronze",
+              "properties": {
+                "type": "Lakehouse",
+                "typeProperties": {
+                  "artifactId": "b1582937-9af0-ac78-499a-d31a533579e9",
+                  "workspaceId": "00000000-0000-0000-0000-000000000000",
+                  "rootFolder": "Files"
+                },
+                "annotations": []
+              }
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "LookupBronzeWatermark",
+        "dependsOn": [
+          {
+            "activity": "LookupSSMS",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "IfCondition",
+        "typeProperties": {
+          "expression": {
+            "value": "@greater(activity('LookupSSMS').output.firstRow.latestorder, activity('LookupBronzeWatermark').output.firstRow.lastModified)",
+            "type": "Expression"
+          },
+          "ifTrueActivities": [
+            {
+              "type": "RefreshDataflow",
+              "typeProperties": {
+                "dataflowId": "e3a854f5-ce4f-4654-af87-c8abfb8efa99",
+                "workspaceId": "6260829b-8914-43e1-bae0-f1defd01461c",
+                "notifyOption": "NoNotification",
+                "dataflowType": "Dataflow-Gen2"
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "SSMS_BronzeLayer",
+              "dependsOn": []
+            },
+            {
+              "type": "RefreshDataflow",
+              "typeProperties": {
+                "dataflowId": "2ddce2b3-0d33-4b1b-91e6-5f0e09a07f80",
+                "workspaceId": "6260829b-8914-43e1-bae0-f1defd01461c",
+                "notifyOption": "NoNotification",
+                "dataflowType": "Dataflow-Gen2"
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "BronzeLayer_SilverLayer",
+              "dependsOn": [
+                {
+                  "activity": "SSMS_BronzeLayer",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "544f9505-2f0f-9cc2-4a73-a582c8bc0885",
+                "workspaceId": "00000000-0000-0000-0000-000000000000"
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Silver_transformation",
+              "dependsOn": [
+                {
+                  "activity": "BronzeLayer_SilverLayer",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            }
+          ],
+          "ifFalseActivities": []
+        },
+        "name": "LookupDifferences",
+        "dependsOn": [
+          {
+            "activity": "LookupBronzeWatermark",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

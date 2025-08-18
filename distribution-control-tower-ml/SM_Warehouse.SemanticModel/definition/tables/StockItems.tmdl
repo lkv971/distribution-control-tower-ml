@@ -1,0 +1,271 @@
+table StockItems
+	lineageTag: 15b09689-7ff3-49ec-ae5b-1e64b087d737
+	sourceLineageTag: [WHS].[StockItems]
+
+	column StockItemID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 204f1b8b-f86e-4858-b5a9-fbf0e24553b2
+		sourceLineageTag: StockItemID
+		summarizeBy: none
+		sourceColumn: StockItemID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column StockItem
+		dataType: string
+		sourceProviderType: varchar(100)
+		lineageTag: 1d0d465b-ecc8-481b-9342-d4bbb87b280a
+		sourceLineageTag: StockItemName
+		summarizeBy: none
+		sourceColumn: StockItemName
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column UnitPackageID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 168d865e-d755-44e6-96d7-f8dd8e885a8e
+		sourceLineageTag: UnitPackageID
+		summarizeBy: none
+		sourceColumn: UnitPackageID
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column OuterPackageID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: bd770201-0290-4839-b492-568440bcb2a5
+		sourceLineageTag: OuterPackageID
+		summarizeBy: none
+		sourceColumn: OuterPackageID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Lead Time'
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: f81df8ae-2c98-4df6-9861-d2be281b03bf
+		sourceLineageTag: LeadTimeDays
+		summarizeBy: none
+		sourceColumn: LeadTimeDays
+
+		changedProperty = Name
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column 'Quantity Per Outer'
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 64cdf8fc-2c31-41c5-b589-09034b8d891d
+		sourceLineageTag: QuantityPerOuter
+		summarizeBy: none
+		sourceColumn: QuantityPerOuter
+
+		changedProperty = Name
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column 'Is Chiller Stock'
+		dataType: string
+		sourceProviderType: varchar(50)
+		lineageTag: 3ebe134a-43b5-49f0-8c8b-e3e826c896ed
+		sourceLineageTag: IsChillerStock
+		summarizeBy: none
+		sourceColumn: IsChillerStock
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tax Rate'
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		sourceProviderType: float
+		lineageTag: d0c2f138-f85e-47a1-9b16-d93195f480c5
+		sourceLineageTag: TaxRate
+		summarizeBy: none
+		sourceColumn: TaxRate
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+	column 'Unit Price'
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		sourceProviderType: float
+		lineageTag: 86005016-ea1b-4563-8aa1-442234283a2c
+		sourceLineageTag: UnitPrice
+		summarizeBy: none
+		sourceColumn: UnitPrice
+
+		changedProperty = Name
+
+		changedProperty = SummarizeBy
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column 'Recommended Retail Price'
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		sourceProviderType: float
+		lineageTag: 11805f7c-6cae-4afc-86bb-1c39aa1b09e3
+		sourceLineageTag: RecommendedRetailPrice
+		summarizeBy: none
+		sourceColumn: RecommendedRetailPrice
+
+		changedProperty = Name
+
+		changedProperty = SummarizeBy
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column 'Weight Per Unit'
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: float
+		lineageTag: b49c9b34-5b57-4bec-aae7-415281f63720
+		sourceLineageTag: TypicalWeightPerUnit
+		summarizeBy: none
+		sourceColumn: TypicalWeightPerUnit
+
+		changedProperty = Name
+
+		changedProperty = SummarizeBy
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+	column 'Country Of Manufacture'
+		dataType: string
+		sourceProviderType: varchar(100)
+		lineageTag: eade24ef-d470-46f8-80ef-944f234db37e
+		sourceLineageTag: CountryOfManufacture
+		dataCategory: Country
+		summarizeBy: none
+		sourceColumn: CountryOfManufacture
+
+		changedProperty = Name
+
+		changedProperty = DataCategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Product Tags'
+		dataType: string
+		sourceProviderType: varchar(100)
+		lineageTag: f56a0642-1b22-4157-9c2a-0a3ab96706fa
+		sourceLineageTag: ProductTags
+		summarizeBy: none
+		sourceColumn: ProductTags
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column LastEditedBy
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: b8e5ae79-503a-4c0a-ba75-f6810a2bcdba
+		sourceLineageTag: LastEditedBy
+		summarizeBy: none
+		sourceColumn: LastEditedBy
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column ValidFrom
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 4ef35d9e-3174-47e8-a463-5f0068e606fe
+		sourceLineageTag: ValidFrom
+		summarizeBy: none
+		sourceColumn: ValidFrom
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidTo
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 77d0419f-abd8-478a-87ff-4491310c31e5
+		sourceLineageTag: ValidTo
+		summarizeBy: none
+		sourceColumn: ValidTo
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'Product Hierarchy'
+		lineageTag: dffa0e53-3506-4fba-81ae-fc1358cce47e
+
+		level 'Country Of Manufacture'
+			lineageTag: d9fd2691-a941-4d5c-bd3b-47d27f68a097
+			column: 'Country Of Manufacture'
+
+		level 'Product Tags'
+			lineageTag: c657cc6c-e059-49fe-a79b-1685005a07d2
+			column: 'Product Tags'
+
+		level StockItem
+			lineageTag: cd466128-06cd-42a5-b629-682189d9ae2e
+			column: StockItem
+
+		changedProperty = Name
+
+	partition StockItems = entity
+		mode: directLake
+		source
+			entityName: StockItems
+			schemaName: WHS
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,83 @@
+table 'Package Types'
+	lineageTag: 4edb3319-436a-47ba-82bf-74822096a57b
+	sourceLineageTag: [WHS].[PackageTypes]
+
+	column PackageTypeID
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 38652259-9582-48e0-aae2-cd7f6e891083
+		sourceLineageTag: PackageTypeID
+		summarizeBy: none
+		sourceColumn: PackageTypeID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Package Type'
+		dataType: string
+		sourceProviderType: varchar(100)
+		lineageTag: b4adbc0d-c04a-4f17-aedf-f1ec2e3e74e9
+		sourceLineageTag: PackageTypeName
+		summarizeBy: none
+		sourceColumn: PackageTypeName
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column LastEditedBy
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 983f3be6-e4e8-4ec1-9d0a-175ac81a4745
+		sourceLineageTag: LastEditedBy
+		summarizeBy: none
+		sourceColumn: LastEditedBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidFrom
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: f3a4722c-b647-45c2-8b36-19729c12dd4d
+		sourceLineageTag: ValidFrom
+		summarizeBy: none
+		sourceColumn: ValidFrom
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidTo
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 2b7e8ff2-340a-4e9a-ab85-86f1a9bf3e3a
+		sourceLineageTag: ValidTo
+		summarizeBy: none
+		sourceColumn: ValidTo
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Package Types' = entity
+		mode: directLake
+		source
+			entityName: PackageTypes
+			schemaName: WHS
+			expressionSource: DatabaseQuery
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,62 @@
+relationship bdf46d23-a89b-522b-3be1-154b54935579
+	fromColumn: Cities.'Province ID'
+	toColumn: Provinces.StateProvinceID
+
+relationship f06b7c90-e51a-0208-e8bd-74b6a103b259
+	fromColumn: Provinces.CountryID
+	toColumn: Countries.'Country ID'
+
+relationship d16ae02d-e737-7501-a799-e7803a729987
+	fromColumn: Customers.DeliveryCityID
+	toColumn: Cities.'City ID'
+
+relationship 4117ce07-8137-d4b2-2ae8-be54c2dd47d3
+	fromColumn: Customers.CustomerCategoryID
+	toColumn: 'Customer Categories'.CustomerCategoryID
+
+relationship 905b35c4-2dff-458e-efbe-0253d099756e
+	fromColumn: Orders.CustomerID
+	toColumn: Customers.CustomerID
+
+relationship 021bf7e1-9af0-001e-e055-1185561b3ca5
+	fromColumn: Orders.SalespersonPersonID
+	toColumn: People.PersonID
+
+relationship 2a503a47-8cb6-22d9-08dd-0498ecb60b8c
+	fromColumn: Invoices.DeliveryMethodID
+	toColumn: 'Delivery Methods'.DeliveryMethodID
+
+relationship a58d166e-f4be-f00c-470c-665ac98b8835
+	fromColumn: StockItems.OuterPackageID
+	toColumn: 'Package Types'.PackageTypeID
+
+relationship d3c6c325-6711-be37-59d8-e9c3793838b7
+	fromColumn: 'Order Lines'.StockItemID
+	toColumn: StockItems.StockItemID
+
+relationship ab539418-5b65-e768-16da-4c6b84f4bfde
+	fromColumn: 'Order Lines'.OrderID
+	toColumn: Orders.OrderID
+
+relationship 19c84b61-e331-cab3-f649-6c0078e18dd2
+	fromColumn: Invoices.CustomerID
+	toColumn: Customers.CustomerID
+
+relationship 888cdee2-159a-460e-2387-0f8be4f0cced
+	fromColumn: Invoices.SalespersonPersonID
+	toColumn: People.PersonID
+
+relationship 29f95179-4a5f-53d4-734c-dac5d817e16b
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: StockItems.StockItemID
+	toColumn: 'StockItem Holdings'.StockItemID
+
+relationship 2292d370-024a-65f0-1f57-a758ed5fde99
+	fromColumn: Orders.'Order Date'
+	toColumn: Dates.Date
+
+relationship 4993b664-527d-d0bd-f397-ce1317eceb24
+	fromColumn: Invoices.'Invoice Date'
+	toColumn: Dates.Date
+
