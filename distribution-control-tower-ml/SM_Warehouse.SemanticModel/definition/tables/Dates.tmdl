@@ -34,14 +34,12 @@ table Dates
 		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
 
 	measure 'Total Sales YoY' = DIVIDE([Total Sales] - [Total Sales LY], [Total Sales LY])
-		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		formatString: #,0.00%;-#,0.00%;#,0.00%
 		lineageTag: b8e0b29c-09a5-4cf3-ac65-148f20561a4f
 
 		changedProperty = Name
 
 		changedProperty = FormatString
-
-		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
 
 	measure 'Total Sales Rolling 12M' = CALCULATE([Total Sales], DATESINPERIOD(Dates[Date], MAX(Dates[Date]), -12, MONTH))
 		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
