@@ -194,6 +194,36 @@
                   ]
                 }
               ]
+            },
+            {
+              "type": "PBISemanticModelRefresh",
+              "typeProperties": {
+                "method": "post",
+                "groupId": "6260829b-8914-43e1-bae0-f1defd01461c",
+                "datasetId": "88fdbc52-76a3-488b-b4ef-2426a4b8576d",
+                "commitMode": "Transactional",
+                "waitOnCompletion": true,
+                "operationType": "SemanticModelRefresh"
+              },
+              "externalReferences": {
+                "connection": "5a380a1e-96ac-483b-b420-f20a504700ed"
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Refresh SM_Warehouse",
+              "dependsOn": [
+                {
+                  "activity": "Update_Silver_watermark",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
             }
           ],
           "ifFalseActivities": []
