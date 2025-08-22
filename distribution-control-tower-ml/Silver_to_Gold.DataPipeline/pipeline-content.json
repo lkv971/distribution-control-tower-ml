@@ -218,6 +218,49 @@
               "name": "Refresh SM_Warehouse",
               "dependsOn": [
                 {
+                  "activity": "Update_IngestionLogs",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "Script",
+              "typeProperties": {
+                "scripts": [
+                  {
+                    "text": {
+                      "value": "INSERT INTO WHS.IngestionLogs (PipelineName, ProcessedTime, Status) \r\nVALUES ('PL_SupplyChain', SYSUTCDATETIME(), 'Succeeded');",
+                      "type": "Expression"
+                    },
+                    "type": "NonQuery"
+                  }
+                ],
+                "scriptBlockExecutionTimeout": "02:00:00"
+              },
+              "linkedService": {
+                "name": "WH_Gold",
+                "properties": {
+                  "type": "DataWarehouse",
+                  "typeProperties": {
+                    "artifactId": "40c2231f-d85d-400a-ae4e-33779b0137f4",
+                    "endpoint": "mpyijd7bpuruxf35j6dzo37vp4-tobgayqurhquhoxa6hpp2akgdq.datawarehouse.fabric.microsoft.com",
+                    "workspaceId": "6260829b-8914-43e1-bae0-f1defd01461c"
+                  },
+                  "annotations": []
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Update_IngestionLogs",
+              "dependsOn": [
+                {
                   "activity": "Update_Silver_watermark",
                   "dependencyConditions": [
                     "Succeeded"
