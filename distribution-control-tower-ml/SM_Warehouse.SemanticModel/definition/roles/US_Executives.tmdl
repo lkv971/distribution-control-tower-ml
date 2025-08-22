@@ -1,0 +1,9 @@
+role US_Executives
+	modelPermission: read
+
+	tablePermission Countries = [Country] == "United States"
+
+	tablePermission People = [Is Employee] == "true"
+
+	annotation PBI_Id = 616aebe1f0e34a7dbd48a7ce68153a95
+

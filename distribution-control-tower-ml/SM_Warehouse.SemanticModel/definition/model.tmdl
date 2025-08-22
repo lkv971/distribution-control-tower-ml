@@ -2,6 +2,7 @@ model Model
 	culture: en-US
 	collation: Latin1_General_100_BIN2_UTF8
 	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
 	sourceQueryCulture: en-US
 	dataAccessOptions
 		legacyRedirects
@@ -13,7 +14,7 @@ annotation PBIDesktopVersion = 2.147.7768.4 (Main)+1de83c1927f5084e1ddff9c9939f8
 
 annotation PBI_QueryOrder = ["DatabaseQuery"]
 
-annotation PBI_ProTooling = ["WebModelingEdit"]
+annotation PBI_ProTooling = ["WebModelingEdit","CalcGroup"]
 
 ref table Cities
 ref table Provinces
@@ -29,6 +30,16 @@ ref table 'StockItem Holdings'
 ref table Countries
 ref table Customers
 ref table Dates
+ref table 'Time Intelligence'
+ref table 'KPI Selector'
+
+ref role US_Executives
+ref role US_NE_Managers
+ref role US_South_Managers
+ref role US_Midwest_Managers
+ref role US_West_Manager
+ref role US_Salesperson
+ref role US_Customers
 
 ref cultureInfo en-US
 

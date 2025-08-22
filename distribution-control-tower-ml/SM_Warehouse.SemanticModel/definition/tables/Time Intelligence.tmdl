@@ -1,0 +1,40 @@
+table 'Time Intelligence'
+	lineageTag: 05a8f657-4d25-4cdc-b1c4-644747f71e58
+
+	calculationGroup
+
+		calculationItem Current = SELECTEDMEASURE()
+
+		calculationItem MTD = ```
+				CALCULATE( SELECTEDMEASURE(), DATESMTD( 'dates'[Date] ) )
+				
+				```
+
+		calculationItem QTD = ```
+				CALCULATE( SELECTEDMEASURE(), DATESQTD( 'dates'[Date] ) )
+				
+				```
+
+		calculationItem YTD = ```
+				CALCULATE( SELECTEDMEASURE(), DATESYTD( 'dates'[Date] ))
+				
+				```
+
+	column 'Time Calc'
+		dataType: string
+		lineageTag: be9f1998-fa19-4f14-bfcc-c0a0884d521f
+		summarizeBy: none
+		sourceColumn: Name
+		sortByColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordinal
+		dataType: int64
+		formatString: 0
+		lineageTag: a5356c2e-1b01-4448-8104-af9433dc47c5
+		summarizeBy: sum
+		sourceColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic
+

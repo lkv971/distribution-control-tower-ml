@@ -1,0 +1,14 @@
+role US_Salesperson
+	modelPermission: read
+
+	tablePermission People = [Is Salesperson] == "true" && LOWER([EmailAddress]) == LOWER(USERPRINCIPALNAME())
+
+	tablePermission Countries = [Country] == "United States"
+
+	tablePermission Customers =
+			Customers[CustomerID] IN VALUES(Orders[CustomerID])
+			|| Customers[CustomerID] IN VALUES(Invoices[CustomerID])
+			|| Customers[CustomerID] IN VALUES(Invoices[BillToCustomerID])
+
+	annotation PBI_Id = ba24396bbe874e6499a1007ddb2ce843
+

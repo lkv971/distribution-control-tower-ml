@@ -1,0 +1,11 @@
+role US_South_Managers
+	modelPermission: read
+
+	tablePermission Countries = [Country] == "United States"
+
+	tablePermission Provinces = [Province Code] IN {"FL","GA","AL","MS","NC","SC","TX","VA","WV","DC","TN","LA","OK","AR","DE","KY","MD"}
+
+	tablePermission People = [Is Employee] == "true"
+
+	annotation PBI_Id = 6d48d1bf7f0d4b229d80b7cc089255ef
+

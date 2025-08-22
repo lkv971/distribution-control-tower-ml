@@ -1,0 +1,52 @@
+table 'KPI Selector'
+	lineageTag: 92370ae9-450d-4ac9-9645-de7036d1eac0
+
+	column 'KPI Selector'
+		lineageTag: 21c99f8c-85d1-4a8d-a111-d266397f0d68
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'KPI Selector Order'
+
+		relatedColumnDetails
+			groupByColumn: 'KPI Selector Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'KPI Selector Fields'
+		isHidden
+		lineageTag: 4e56fc23-4164-47e0-8a0f-8a800f879e4d
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'KPI Selector Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'KPI Selector Order'
+		isHidden
+		formatString: 0
+		lineageTag: 77df7c55-3957-4ea7-94b6-d63282b0e30e
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'KPI Selector' = calculated
+		mode: import
+		source =
+				{
+				    ("Total Sales", NAMEOF('Order Lines'[Total Sales]), 0),
+				    ("Units Sold", NAMEOF('Order Lines'[Units Sold]), 1),
+				    ("Orders Count", NAMEOF('Orders'[Orders Count]), 2),
+				    ("Customers Count", NAMEOF('Customers'[Customers Count]), 3),
+				    ("Total Sales incl Tax", NAMEOF('Order Lines'[Total Sales incl Tax]), 4),
+				    ("Average Selling Price", NAMEOF('Order Lines'[Average Selling Price]), 5)
+				}
+
+	annotation PBI_Id = f4d3ca586dc04fefa7bc756403db49de
+

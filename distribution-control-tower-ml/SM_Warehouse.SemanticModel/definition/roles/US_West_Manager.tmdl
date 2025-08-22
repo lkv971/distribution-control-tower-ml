@@ -1,0 +1,9 @@
+role US_West_Manager
+	modelPermission: read
+
+	tablePermission People = [Is Employee] == "true"
+
+	tablePermission Provinces = [Province Code] IN {"CA","WA","OR","AZ","NV","NM","MT","ID","UT","WY","AK","HI","CO"}
+
+	annotation PBI_Id = 51aa1cc786584733b3467e6edd86b0f2
+

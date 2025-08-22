@@ -1,0 +1,11 @@
+role US_Midwest_Managers
+	modelPermission: read
+
+	tablePermission Countries = [Country] == "United States"
+
+	tablePermission Provinces = [Province Code] IN {"IL","IN","IA","MI","WI","MO","MN","SD","ND","OH","KS","NE"}
+
+	tablePermission People = [Is Employee] == "true"
+
+	annotation PBI_Id = 25d475cf06ac4f6c8c73c0e2c9829285
+
