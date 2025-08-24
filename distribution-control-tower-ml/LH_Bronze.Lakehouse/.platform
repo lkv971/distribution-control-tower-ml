@@ -2,7 +2,8 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
   "metadata": {
     "type": "Lakehouse",
-    "displayName": "LH_Bronze"
+    "displayName": "LH_Bronze",
+    "description": "Raw landing from SSMS with minimal shaping; auditability and replay."
   },
   "config": {
     "version": "2.0",
