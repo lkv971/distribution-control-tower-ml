@@ -36,19 +36,42 @@ from delta.tables import DeltaTable
 
 # CELL ********************
 
-df_stockitemholdings = spark.read.table("LH_Silver.WarehouseStockItemHoldings")
-df_stockitems = spark.read.table("LH_Silver.WarehouseStockItems")
-df_deliverymethods = spark.read.table("LH_Silver.ApplicationDeliveryMethods")
-df_packagetypes =  spark.read.table("LH_Silver.WarehousePackageTypes")
-df_cities = spark.read.table("LH_Silver.ApplicationCities")
-df_countries = spark.read.table("LH_Silver.ApplicationCountries")
-df_provinces = spark.read.table("LH_Silver.ApplicationStateProvinces")
-df_people = spark.read.table("LH_Silver.ApplicationPeople")
-df_customers = spark.read.table("LH_Silver.SalesCustomers")
-df_customercategories = spark.read.table("LH_Silver.SalesCustomerCategories")
-df_invoices = spark.read.table("LH_Silver.SalesInvoices")
-df_orders = spark.read.table("LH_Silver.SalesOrders")
-df_orderlines = spark.read.table("LH_Silver.SalesOrderLines")
+workspace_id = mssparkutils.notebook.entrywidget("workspace_id")
+bronze_lakehouse_id = mssparkutils.notebook.entrywidget("bronze_lakehouse_id")
+silver_lakehouse_id = mssparkutils.notebook.entrywidget("silver_lakehouse_id")
+watermark_path = mssparkutils.notebook.entrywidget("watermark_path")
+environment = mssparkutils.notebook.entrywidget("environment")
+current_time = mssparkutils.notebook.entrywidget("current_time")
+last_modified = mssparkutils.notebook.entrywidget("last_modified")
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+def get_table_path(table_name, is_bronze=True):
+    lakehouse_id = bronze_lakehouse_id if is_bronze else silver_lakehouse_id
+    return f"abfss://Files@{lakehouse_id}.dfs.fabric.microsoft.com/{'bronze' if is_bronze else 'silver'}/{table_name}"
+
+spark.conf.set("spark.sql.catalog.lakehouse", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
+
+df_stockitemholdings = spark.read.format("delta").load(get_table_path("WarehouseStockItemHoldings", is_bronze=True))
+df_stockitems = spark.read.format("delta").load(get_table_path("WarehouseStockItems", is_bronze=True))
+df_deliverymethods = spark.read.format("delta").load(get_table_path("ApplicationDeliveryMethods", is_bronze=True))
+df_packagetypes = spark.read.format("delta").load(get_table_path("WarehousePackageTypes", is_bronze=True))
+df_cities = spark.read.format("delta").load(get_table_path("ApplicationCities", is_bronze=True))
+df_countries = spark.read.format("delta").load(get_table_path("ApplicationCountries", is_bronze=True))
+df_provinces = spark.read.format("delta").load(get_table_path("ApplicationStateProvinces", is_bronze=True))
+df_people = spark.read.format("delta").load(get_table_path("ApplicationPeople", is_bronze=True))
+df_customers = spark.read.format("delta").load(get_table_path("SalesCustomers", is_bronze=True))
+df_customercategories = spark.read.format("delta").load(get_table_path("SalesCustomerCategories", is_bronze=True))
+df_invoices = spark.read.format("delta").load(get_table_path("SalesInvoices", is_bronze=True))
+df_orders = spark.read.format("delta").load(get_table_path("SalesOrders", is_bronze=True))
+df_orderlines = spark.read.format("delta").load(get_table_path("SalesOrderLines", is_bronze=True))
 
 
 # METADATA ********************
@@ -193,6 +216,40 @@ for table_name, append_df in append_tables.items():
 
 df = spark.sql("SELECT * FROM LH_Silver.warehousepackagetypes LIMIT 1000")
 display(df)
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+try:
+    folder_path = "/".join(watermark_path.split("/")[:-1])
+    file_name = watermark_path.split("/")[-1]
+    
+    watermark_content = f'{{"environment": "{environment}", "lastModified": "{current_time}"}}'
+    
+    mssparkutils.fs.put(
+        f"abfss://Files@{silver_lakehouse_id}.dfs.fabric.microsoft.com/{watermark_path}",
+        watermark_content,
+        overwrite=True
+    )
+    
+    print(f"SILVER WATERMARK UPDATED FOR {environment.upper()} ENVIRONMENT:")
+    print(f"Path: abfss://Files@{silver_lakehouse_id}.dfs.fabric.microsoft.com/{watermark_path}")
+    print(f"Content: {watermark_content}")
+    
+    updated_content = mssparkutils.fs.text.read(
+        f"abfss://Files@{silver_lakehouse_id}.dfs.fabric.microsoft.com/{watermark_path}"
+    )
+    print(f"Verified watermark content: {updated_content}")
+    
+except Exception as e:
+    print(f" ERROR UPDATING SILVER WATERMARK: {str(e)}")
+    raise
 
 # METADATA ********************
 

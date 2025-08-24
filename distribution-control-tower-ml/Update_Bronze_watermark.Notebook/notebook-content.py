@@ -22,7 +22,8 @@
 
 # CELL ********************
 
-lastModified = ""
+from notebookutils import mssparkutils
+import json
 
 # METADATA ********************
 
@@ -33,16 +34,46 @@ lastModified = ""
 
 # CELL ********************
 
-from notebookutils import mssparkutils
-import json
+workspace_id = mssparkutils.notebook.entrywidget("workspace_id")
+bronze_lakehouse_id = mssparkutils.notebook.entrywidget("bronze_lakehouse_id")
+watermark_path = mssparkutils.notebook.entrywidget("watermark_path")
+environment = mssparkutils.notebook.entrywidget("environment")
+current_time = mssparkutils.notebook.entrywidget("current_time")
+last_modified = mssparkutils.notebook.entrywidget("last_modified")
 
-payload = json.dumps({"lastModified": lastModified}, indent=2)
+# METADATA ********************
 
-folder = "Files/watermarks"
-file   = f"{folder}/Watermark.json"
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
 
-mssparkutils.fs.mkdirs(folder)
-mssparkutils.fs.put(file, payload, overwrite=True)
+# CELL ********************
+
+try:
+    folder_path = "/".join(watermark_path.split("/")[:-1])
+    file_name = watermark_path.split("/")[-1]
+    
+    watermark_content = f'{{"environment": "{environment}", "lastModified": "{last_modified}"}}'
+    
+    mssparkutils.fs.put(
+        f"abfss://Files@{bronze_lakehouse_id}.dfs.fabric.microsoft.com/{watermark_path}",
+        watermark_content,
+        overwrite=True
+    )
+    
+    print(f"BRONZE WATERMARK UPDATED FOR {environment.upper()} ENVIRONMENT:")
+    print(f"Path: abfss://Files@{bronze_lakehouse_id}.dfs.fabric.microsoft.com/{watermark_path}")
+    print(f"Content: {watermark_content}")
+    
+    updated_content = mssparkutils.fs.text.read(
+        f"abfss://Files@{bronze_lakehouse_id}.dfs.fabric.microsoft.com/{watermark_path}"
+    )
+    print(f"Verified watermark content: {updated_content}")
+    
+except Exception as e:
+    print(f"ERROR UPDATING BRONZE WATERMARK: {str(e)}")
+    raise
 
 # METADATA ********************
 

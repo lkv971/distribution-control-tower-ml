@@ -36,26 +36,47 @@ from datetime import datetime, date
 
 # CELL ********************
 
-TABLE = "SalesOrders"  
+workspace_id = mssparkutils.notebook.entrywidget("workspace_id")
+silver_lakehouse_id = mssparkutils.notebook.entrywidget("silver_lakehouse_id")
+watermark_path = mssparkutils.notebook.entrywidget("watermark_path")
+environment = mssparkutils.notebook.entrywidget("environment")
+current_time = mssparkutils.notebook.entrywidget("current_time")
 
-row = (spark.read.table(TABLE)
-             .select(spark_max("OrderDate").alias("LastOrderDate"))
-             .first())
-val = row["LastOrderDate"] if row else None
 
-if isinstance(val, datetime):
-    lastModified = val.strftime("%Y-%m-%dT%H:%M:%S") + "Z"
-elif isinstance(val, date):
-    lastModified = f"{val.isoformat()}T00:00:00Z"
-else:
-    lastModified = "1970-01-01T00:00:00Z"
+# METADATA ********************
 
-payload = json.dumps({"lastModified": lastModified}, indent=2)
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
 
-folder = "Files/watermarks"
-file   = f"{folder}/Watermark.json"  
-mssparkutils.fs.mkdirs(folder)
-mssparkutils.fs.put(file, payload, overwrite=True)
+# CELL ********************
+
+
+try:
+    folder_path = "/".join(watermark_path.split("/")[:-1])
+    file_name = watermark_path.split("/")[-1]
+    
+    watermark_content = f'{{"environment": "{environment}", "lastModified": "{current_time}"}}'
+    
+    mssparkutils.fs.put(
+        f"abfss://Files@{silver_lakehouse_id}.dfs.fabric.microsoft.com/{watermark_path}",
+        watermark_content,
+        overwrite=True
+    )
+    
+    print(f"SILVER WATERMARK UPDATED FOR {environment.upper()} ENVIRONMENT:")
+    print(f"Path: abfss://Files@{silver_lakehouse_id}.dfs.fabric.microsoft.com/{watermark_path}")
+    print(f"Content: {watermark_content}")
+    
+    updated_content = mssparkutils.fs.text.read(
+        f"abfss://Files@{silver_lakehouse_id}.dfs.fabric.microsoft.com/{watermark_path}"
+    )
+    print(f"Verified watermark content: {updated_content}")
+    
+except Exception as e:
+    print(f"ERROR UPDATING SILVER WATERMARK: {str(e)}")
+    raise
 
 # METADATA ********************
 

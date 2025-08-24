@@ -2,83 +2,42 @@
   "properties": {
     "activities": [
       {
+        "name": "LookupSSMS",
         "type": "Lookup",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 3,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
         "typeProperties": {
           "source": {
             "type": "SqlServerSource",
-            "sqlReaderQuery": "SELECT MAX(OrderDate) AS latestorder FROM Sales.Orders;",
-            "partitionOption": "None",
-            "queryTimeout": "02:00:00"
+            "sqlReaderQuery": "SELECT MAX(OrderDate) AS latestorder FROM @{pipeline().parameters.SourceSchema}.Orders;",
+            "queryTimeout": "02:00:00",
+            "partitionOption": "None"
           },
           "datasetSettings": {
+            "annotations": [],
             "type": "SqlServerTable",
-            "typeProperties": {
-              "database": "WideWorldImporters"
-            },
             "schema": [],
-            "externalReferences": {
-              "connection": "d229e438-f50c-46bb-8bac-0a0e0306b5c8"
+            "typeProperties": {
+              "database": {
+                "value": "@pipeline().parameters.SourceDatabase",
+                "type": "Expression"
+              }
             },
-            "annotations": []
+            "externalReferences": {
+              "connection": "@pipeline().parameters.SourceConnectionID"
+            }
           }
-        },
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 3,
-          "retryIntervalInSeconds": 30,
-          "secureInput": false,
-          "secureOutput": false
-        },
-        "name": "LookupSSMS",
-        "dependsOn": []
+        }
       },
       {
-        "type": "Lookup",
-        "typeProperties": {
-          "source": {
-            "type": "JsonSource",
-            "formatSettings": {
-              "type": "JsonReadSettings"
-            },
-            "storeSettings": {
-              "type": "LakehouseReadSettings",
-              "recursive": true,
-              "enablePartitionDiscovery": false
-            }
-          },
-          "datasetSettings": {
-            "type": "Json",
-            "typeProperties": {
-              "location": {
-                "type": "LakehouseLocation",
-                "folderPath": "watermarks",
-                "fileName": "Watermark.json"
-              }
-            },
-            "schema": {},
-            "linkedService": {
-              "name": "LH_Bronze",
-              "properties": {
-                "type": "Lakehouse",
-                "typeProperties": {
-                  "artifactId": "b1582937-9af0-ac78-499a-d31a533579e9",
-                  "workspaceId": "00000000-0000-0000-0000-000000000000",
-                  "rootFolder": "Files"
-                },
-                "annotations": []
-              }
-            },
-            "annotations": []
-          }
-        },
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 3,
-          "retryIntervalInSeconds": 30,
-          "secureInput": false,
-          "secureOutput": false
-        },
         "name": "LookupBronzeWatermark",
+        "type": "Lookup",
         "dependsOn": [
           {
             "activity": "LookupSSMS",
@@ -86,86 +45,61 @@
               "Succeeded"
             ]
           }
-        ]
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 3,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "source": {
+            "type": "JsonSource",
+            "storeSettings": {
+              "type": "LakehouseReadSettings",
+              "recursive": true,
+              "enablePartitionDiscovery": false
+            },
+            "formatSettings": {
+              "type": "JsonReadSettings"
+            }
+          },
+          "datasetSettings": {
+            "annotations": [],
+            "linkedService": {
+              "name": "0c4d5ec6_761d_4079_93de_3de86c1122a4",
+              "properties": {
+                "annotations": [],
+                "type": "Lakehouse",
+                "typeProperties": {
+                  "workspaceId": "@pipeline().parameters.WorkspaceID",
+                  "artifactId": "@pipeline().parameters.BronzeLakehouseID",
+                  "rootFolder": "Files"
+                }
+              }
+            },
+            "type": "Json",
+            "typeProperties": {
+              "location": {
+                "type": "LakehouseLocation",
+                "fileName": {
+                  "value": "@split(pipeline().parameters.WatermarkPath, '/')[1]",
+                  "type": "Expression"
+                },
+                "folderPath": {
+                  "value": "@split(pipeline().parameters.WatermarkPath, '/')[0]",
+                  "type": "Expression"
+                }
+              }
+            },
+            "schema": {}
+          }
+        }
       },
       {
-        "type": "IfCondition",
-        "typeProperties": {
-          "expression": {
-            "value": "@greater(activity('LookupSSMS').output.firstRow.latestorder, activity('LookupBronzeWatermark').output.firstRow.lastModified)",
-            "type": "Expression"
-          },
-          "ifTrueActivities": [
-            {
-              "type": "RefreshDataflow",
-              "typeProperties": {
-                "dataflowId": "e3a854f5-ce4f-4654-af87-c8abfb8efa99",
-                "workspaceId": "6260829b-8914-43e1-bae0-f1defd01461c",
-                "notifyOption": "NoNotification",
-                "dataflowType": "Dataflow-Gen2"
-              },
-              "policy": {
-                "timeout": "0.12:00:00",
-                "retry": 3,
-                "retryIntervalInSeconds": 30,
-                "secureInput": false,
-                "secureOutput": false
-              },
-              "name": "SSMS_BronzeLayer",
-              "dependsOn": []
-            },
-            {
-              "type": "RefreshDataflow",
-              "typeProperties": {
-                "dataflowId": "2ddce2b3-0d33-4b1b-91e6-5f0e09a07f80",
-                "workspaceId": "6260829b-8914-43e1-bae0-f1defd01461c",
-                "notifyOption": "NoNotification",
-                "dataflowType": "Dataflow-Gen2"
-              },
-              "policy": {
-                "timeout": "0.12:00:00",
-                "retry": 3,
-                "retryIntervalInSeconds": 30,
-                "secureInput": false,
-                "secureOutput": false
-              },
-              "name": "BronzeLayer_SilverLayer",
-              "dependsOn": [
-                {
-                  "activity": "SSMS_BronzeLayer",
-                  "dependencyConditions": [
-                    "Succeeded"
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "TridentNotebook",
-              "typeProperties": {
-                "notebookId": "544f9505-2f0f-9cc2-4a73-a582c8bc0885",
-                "workspaceId": "00000000-0000-0000-0000-000000000000"
-              },
-              "policy": {
-                "timeout": "0.12:00:00",
-                "retry": 0,
-                "retryIntervalInSeconds": 30,
-                "secureInput": false,
-                "secureOutput": false
-              },
-              "name": "Silver_transformation",
-              "dependsOn": [
-                {
-                  "activity": "BronzeLayer_SilverLayer",
-                  "dependencyConditions": [
-                    "Succeeded"
-                  ]
-                }
-              ]
-            }
-          ],
-          "ifFalseActivities": []
-        },
         "name": "LookupDifferences",
+        "type": "IfCondition",
         "dependsOn": [
           {
             "activity": "LookupBronzeWatermark",
@@ -173,8 +107,280 @@
               "Succeeded"
             ]
           }
-        ]
+        ],
+        "typeProperties": {
+          "expression": {
+            "value": "@greater(activity('LookupSSMS').output.firstRow.latestorder, activity('LookupBronzeWatermark').output.firstRow.lastModified)",
+            "type": "Expression"
+          },
+          "ifFalseActivities": [],
+          "ifTrueActivities": [
+            {
+              "name": "SSMS_BronzeLayer",
+              "type": "RefreshDataflow",
+              "dependsOn": [],
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 3,
+                "retryIntervalInSeconds": 30,
+                "secureOutput": false,
+                "secureInput": false
+              },
+              "typeProperties": {
+                "dataflowId": {
+                  "value": "@pipeline().parameters.SSMSDataflowID",
+                  "type": "Expression"
+                },
+                "workspaceId": {
+                  "value": "@pipeline().parameters.WorkspaceID",
+                  "type": "Expression"
+                },
+                "notifyOption": "NoNotification"
+              }
+            },
+            {
+              "name": "BronzeLayer_SilverLayer",
+              "type": "RefreshDataflow",
+              "dependsOn": [
+                {
+                  "activity": "SSMS_BronzeLayer",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ],
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 3,
+                "retryIntervalInSeconds": 30,
+                "secureOutput": false,
+                "secureInput": false
+              },
+              "typeProperties": {
+                "dataflowId": {
+                  "value": "@pipeline().parameters.BronzeToSilverDataflowID",
+                  "type": "Expression"
+                },
+                "workspaceId": {
+                  "value": "@pipeline().parameters.WorkspaceID",
+                  "type": "Expression"
+                },
+                "notifyOption": "NoNotification"
+              }
+            },
+            {
+              "name": "Silver_transformation",
+              "type": "TridentNotebook",
+              "dependsOn": [
+                {
+                  "activity": "BronzeLayer_SilverLayer",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ],
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureOutput": false,
+                "secureInput": false
+              },
+              "typeProperties": {
+                "notebookId": {
+                  "value": "@pipeline().parameters.SilverTransformationNotebookID",
+                  "type": "Expression"
+                },
+                "workspaceId": {
+                  "value": "@pipeline().parameters.WorkspaceID",
+                  "type": "Expression"
+                },
+                "parameters": {
+                  "workspace_id": {
+                    "value": {
+                      "value": "@pipeline().parameters.WorkspaceID",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "bronze_lakehouse_id": {
+                    "value": {
+                      "value": "@pipeline().parameters.BronzeLakehouseID",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "watermark_path": {
+                    "value": {
+                      "value": "@pipeline().parameters.WatermarkPath",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "environment": {
+                    "value": {
+                      "value": "@pipeline().parameters.Environment",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "current_time": {
+                    "value": {
+                      "value": "@utcNow()",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "last_modified": {
+                    "value": {
+                      "value": "@activity('LookupSSMS').output.firstRow.latestorder",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "silver_lakehiouse_id": {
+                    "value": {
+                      "value": "@pipeline().parameters.SilverLakehouseID",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            {
+              "name": "UpdateWatermark",
+              "type": "TridentNotebook",
+              "dependsOn": [
+                {
+                  "activity": "Silver_transformation",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ],
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureOutput": false,
+                "secureInput": false
+              },
+              "typeProperties": {
+                "notebookId": {
+                  "value": "@pipeline().parameters.UpdateBronzeWatermarkNotebookID",
+                  "type": "Expression"
+                },
+                "workspaceId": {
+                  "value": "@pipeline().parameters.WorkspaceID",
+                  "type": "Expression"
+                },
+                "parameters": {
+                  "workspace_id": {
+                    "value": {
+                      "value": "@pipeline().parameters.WorkspaceID",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "bronze_lakehouse_id": {
+                    "value": {
+                      "value": "@pipeline().parameters.BronzeLakehouseID",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "watermark_path": {
+                    "value": {
+                      "value": "@pipeline().parameters.WatermarkPath",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "environment": {
+                    "value": {
+                      "value": "@pipeline().parameters.Environment",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "current_time": {
+                    "value": {
+                      "value": "@utcNow()",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "last_modified": {
+                    "value": {
+                      "value": "@activity('LookupSSMS').output.firstRow.latestorder",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ]
+        }
       }
-    ]
+    ],
+    "parameters": {
+      "WorkspaceID": {
+        "type": "string",
+        "defaultValue": "6260829b-8914-43e1-bae0-f1defd01461c"
+      },
+      "BronzeLakehouseID": {
+        "type": "string",
+        "defaultValue": "533579e9-d31a-499a-ac78-9af0b1582937"
+      },
+      "WatermarkPath": {
+        "type": "string",
+        "defaultValue": "watermarks/Watermark.json"
+      },
+      "Environment": {
+        "type": "string",
+        "defaultValue": "Dev"
+      },
+      "SilverLakehouseID": {
+        "type": "string",
+        "defaultValue": "eeca8fd3-76a3-4c12-929b-e93d065aae10"
+      },
+      "WarehouseID": {
+        "type": "string",
+        "defaultValue": "40c2231f-d85d-400a-ae4e-33779b0137f4"
+      },
+      "PipelineName": {
+        "type": "string",
+        "defaultValue": "PL_BronzeToSilver_Dev"
+      },
+      "SSMSDataflowID": {
+        "type": "string",
+        "defaultValue": "e3a854f5-ce4f-4654-af87-c8abfb8efa99"
+      },
+      "BronzeToSilverDataflowID": {
+        "type": "string",
+        "defaultValue": "2ddce2b3-0d33-4b1b-91e6-5f0e09a07f80"
+      },
+      "SilverTransformationNotebookID": {
+        "type": "string",
+        "defaultValue": "80960a23-b13b-4bd8-817c-26b1479c7d72"
+      },
+      "UpdateBronzeWatermarkNotebookID": {
+        "type": "string",
+        "defaultValue": "c8bc0885-a582-4a73-9cc2-2f0f544f9505"
+      },
+      "SourceSchema": {
+        "type": "string",
+        "defaultValue": "Sales"
+      },
+      "SourceDatabase": {
+        "type": "string",
+        "defaultValue": "WideWorldImporters"
+      },
+      "SourceConnectionID": {
+        "type": "string"
+      }
+    }
   }
 }
