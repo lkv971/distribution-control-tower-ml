@@ -3,7 +3,7 @@
   "metadata": {
     "type": "Notebook",
     "displayName": "NB_Train_Regression",
-    "description": "New notebook"
+    "description": "New notebookJoins Orders/OrderLines, builds monthly features (lags/MA, seasonality), trains baselines + Linear/Tree/RandomForest.\n\nTracks runs in MLflow; time-based train/test split; segmentation supported (e.g., by CustomerCategory)."
   },
   "config": {
     "version": "2.0",
